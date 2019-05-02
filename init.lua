@@ -73,7 +73,6 @@ local function cons(x, s)
 end
 
 local function zip(...)
-	local ok = true
 	local hs, ts = {...}, {...}
 	for i = 1, #hs do
 		local s = hs[i]
@@ -81,18 +80,16 @@ local function zip(...)
 			return nil
 		end
 		hs[i] = s.head
-		local t = s.tail
-		ts[i] = t
-		if t == nil then
-			ok = false
-		end
 	end
 	return new(hs, function()
-		if ok then
-			return zip(unpack(ts))
-		else
-			return nil
+		for i = 1, #ts do
+			local s = ts[i].tail
+			if s == nil then
+				return nil
+			end
+			ts[i] = s
 		end
+		return zip(unpack(ts))
 	end)
 end
 
