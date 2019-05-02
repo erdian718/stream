@@ -7,14 +7,22 @@ A simple lazy list module for [Lua](https://github.com/ofunc/lua).
 ```lua
 local stream = require 'stream'
 
-stream.sequence(0):filter(function(x)
-	return x % 2 == 0
-end):take(10):walk(print)
-
-local xs = {'A', 'B', 'C', 'D', 'E'}
-stream.make(pairs(xs)):map(function(x)
+-- A stream from iteration function `pairs`.
+local xs = stream.make(pairs{'A', 'B', 'C'}):map(function(x)
+	-- We only need the second return value.
 	return x[2]
-end):walk(print)
+end)
+
+-- An infinite even sequence.
+local ys = stream.sequence(0):filter(function(x)
+	return x % 2 == 0
+end)
+
+-- Concatenation.
+local zs = xs .. ys
+
+-- Takes the first 10 elements and print them.
+zs:take(10):walk(print)
 ```
 
 More examples refer to tests.
