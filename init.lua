@@ -257,7 +257,7 @@ function metatable:cut(x)
 end
 
 return {
-	version = '1.0.0';
+	version = '1.0.1';
 	new = new;
 	cons = cons;
 	make = make;
