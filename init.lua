@@ -23,7 +23,9 @@ misrepresented as being the original software.
 local type = type
 local rawset = rawset
 local setmetatable = setmetatable
-local unpack = require('table').unpack
+local table = require 'table'
+local unpack = table.unpack
+local pack = table.pack
 
 local new
 local metatable = {}
@@ -73,8 +75,9 @@ local function cons(x, s)
 end
 
 local function zip(...)
-	local hs, ts = {...}, {...}
-	for i = 1, #hs do
+	local hs, ts = pack(...), pack(...)
+	local n = hs.n
+	for i = 1, n do
 		local s = hs[i]
 		if s == nil then
 			return nil
@@ -82,14 +85,10 @@ local function zip(...)
 		hs[i] = s.head
 	end
 	return new(hs, function()
-		for i = 1, #ts do
-			local s = ts[i].tail
-			if s == nil then
-				return nil
-			end
-			ts[i] = s
+		for i = 1, n do
+			ts[i] = ts[i].tail
 		end
-		return zip(unpack(ts))
+		return zip(unpack(ts, 1, n))
 	end)
 end
 
